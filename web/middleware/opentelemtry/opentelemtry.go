@@ -8,7 +8,7 @@ import (
 	"goStudy/web"
 )
 
-const defaultInstrumentationName = "gitee.com/geektime-geekbang/geektime-go/web/middle/opentelemetry"
+const defaultInstrumentationName = "opentelemetry"
 
 type MiddlewareBuilder struct {
 	Tracer trace.Tracer
