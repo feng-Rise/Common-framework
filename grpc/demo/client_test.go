@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"reflect"
 	"testing"
 )
@@ -22,11 +23,50 @@ func TestInitClientProxy(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			err := InitClientProxy(tc.service)
+			p := &MockProxy{
+				result: []byte(`{"name": "feng"}`),
+			}
+			err := InitClientProxy(tc.service, p)
 			assert.Equal(t, tc.wantErr, err)
-			tc.service.GetById(context.Background(), &GetByIdReq{})
+			resp, err := tc.service.GetById(context.Background(), &GetByIdReq{Id: 14})
+			require.Nil(t, err)
+
+			//断言 p的数据
+			assert.Equal(t, &Requset{
+				ServiceName: "UserService",
+				MethodName:  "GetById",
+				Args:        &GetByIdReq{Id: 14},
+			}, p.req)
+			assert.Equal(t, &GetByIdResp{
+				Name: "feng",
+			}, resp)
 		})
 	}
+}
+
+type MockProxy struct {
+	req    *Requset
+	result []byte
+}
+
+func (m *MockProxy) Invoke(ctx context.Context, req *Requset) (*Reponse, error) {
+	m.req = req
+
+	return &Reponse{
+		Data: m.result,
+	}, nil
+}
+
+type UserService struct {
+	GetById func(ctx context.Context, req *GetByIdReq) (*GetByIdResp, error)
+}
+
+type GetByIdReq struct {
+	Id int
+}
+
+type GetByIdResp struct {
+	Name string `json:"name"`
 }
 
 func TestMakeFunc(t *testing.T) {
@@ -50,14 +90,4 @@ func TestMakeFunc(t *testing.T) {
 	result := wrapped.Call([]reflect.Value{reflect.ValueOf(5)})[0].Int()
 	fmt.Println(result) // Output: 6
 
-}
-
-type UserService struct {
-	GetById func(ctx context.Context, req *GetByIdReq) (*GetByIdResp, error)
-}
-
-type GetByIdReq struct {
-}
-
-type GetByIdResp struct {
 }
