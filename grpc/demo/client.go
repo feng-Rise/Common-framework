@@ -6,7 +6,7 @@ import (
 	"reflect"
 )
 
-func InitClientProxy(servicie interface{}, p Proxy) error {
+func InitClientProxy(servicie Service, p Proxy) error {
 	typ := reflect.TypeOf(servicie).Elem()
 	value := reflect.ValueOf(servicie).Elem()
 	numberFiled := value.NumField()
@@ -26,10 +26,12 @@ func InitClientProxy(servicie interface{}, p Proxy) error {
 			if !ok {
 				panic("")
 			}
+
+			data, _ := json.Marshal(arg)
 			req := &Requset{
-				ServiceName: typ.Name(),
+				ServiceName: servicie.Name(),
 				MethodName:  fieldType.Name,
-				Args:        arg,
+				Data:        data,
 			}
 
 			//发送请求   有个接口  不希望在这里用具体的TCP操作
@@ -63,4 +65,8 @@ func InitClientProxy(servicie interface{}, p Proxy) error {
 		filedValue.Set(fn)
 	}
 	return nil
+}
+
+type Service interface {
+	Name() string
 }
