@@ -1,10 +1,11 @@
-package demo
+package RpcProxyMode
 
 import (
 	"context"
 	"fmt"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"gostudy/grpc/RpcProxyMode/message"
 	"log"
 	"reflect"
 	"testing"
@@ -33,7 +34,7 @@ func TestInitClientProxy(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			p := &MockProxy{
-				result: []byte(`{"name": "feng"}`),
+				result: []byte(`{"Id": "14"}`),
 			}
 			err := InitClientProxy(tc.service, p)
 			assert.Equal(t, tc.wantErr, err)
@@ -41,7 +42,7 @@ func TestInitClientProxy(t *testing.T) {
 			require.Nil(t, err)
 
 			//断言 p的数据
-			assert.Equal(t, &Requset{
+			assert.Equal(t, &message.Request{
 				ServiceName: "user-service",
 				MethodName:  "GetById",
 				Data:        []byte(`{"Id":"14"}`),
@@ -54,14 +55,14 @@ func TestInitClientProxy(t *testing.T) {
 }
 
 type MockProxy struct {
-	req    *Requset
+	req    *message.Request
 	result []byte
 }
 
-func (m *MockProxy) Invoke(ctx context.Context, req *Requset) (*Reponse, error) {
+func (m *MockProxy) Invoke(ctx context.Context, req *message.Request) (*message.Response, error) {
 	m.req = req
 
-	return &Reponse{
+	return &message.Response{
 		Data: m.result,
 	}, nil
 }

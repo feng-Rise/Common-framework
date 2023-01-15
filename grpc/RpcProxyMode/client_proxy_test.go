@@ -1,10 +1,11 @@
-package demo
+package RpcProxyMode
 
 import (
 	"context"
 	"fmt"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"reflect"
 	"testing"
 )
 
@@ -33,4 +34,21 @@ func TestClient_Inovke(t *testing.T) {
 			}, resp)
 		})
 	}
+}
+
+type A struct{}
+
+func (a *A) DoSomething() {
+	fmt.Println("Doing something in A...")
+}
+
+func TestDemo(t *testing.T) {
+	aValue := reflect.ValueOf(&A{})
+	method := aValue.MethodByName("DoSomething")
+	newFunc := reflect.MakeFunc(method.Type(), func(args []reflect.Value) (results []reflect.Value) {
+		fmt.Println("Doing something in new function...")
+		return nil
+	})
+	method.Set(newFunc)
+	method.Call(nil)
 }

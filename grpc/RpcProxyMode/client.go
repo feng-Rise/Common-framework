@@ -1,14 +1,18 @@
-package demo
+package RpcProxyMode
 
 import (
 	"context"
 	"encoding/json"
+	"gostudy/grpc/RpcProxyMode/message"
 	"reflect"
+	"sync/atomic"
 )
 
-func InitClientProxy(servicie Service, p Proxy) error {
-	typ := reflect.TypeOf(servicie).Elem()
-	value := reflect.ValueOf(servicie).Elem()
+var messageId uint32 = 0
+
+func InitClientProxy(service Service, p Proxy) error {
+	typ := reflect.TypeOf(service).Elem()
+	value := reflect.ValueOf(service).Elem()
 	numberFiled := value.NumField()
 	for i := 0; i < numberFiled; i++ {
 		fieldType := typ.Field(i)
@@ -26,14 +30,20 @@ func InitClientProxy(servicie Service, p Proxy) error {
 			if !ok {
 				panic("")
 			}
-
+			atomic.AddUint32(&messageId, 1)
 			data, _ := json.Marshal(arg)
-			req := &Requset{
-				ServiceName: servicie.Name(),
+			req := &message.Request{
+				//计算头部长度和响应体长度
+				BodyLength:  uint32(len(data)),
+				Compressor:  0,
+				Serializer:  0,
+				MessageId:   messageId,
+				Version:     0,
+				ServiceName: service.Name(),
 				MethodName:  fieldType.Name,
 				Data:        data,
 			}
-
+			req.CalHeadLength()
 			//发送请求   有个接口  不希望在这里用具体的TCP操作
 			resp, err := p.Invoke(ctx, req)
 
@@ -44,7 +54,7 @@ func InitClientProxy(servicie Service, p Proxy) error {
 				results = append(results, reflect.ValueOf(err))
 				return
 			}
-			//必须转成interface再unmarshal，不然不会解析，坑。。。
+
 			first := reflect.New(out).Interface()
 			//涉及序列化协议的转化 resp.data => first 用json做序列化
 

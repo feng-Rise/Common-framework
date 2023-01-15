@@ -1,21 +1,12 @@
-package demo
+package RpcProxyMode
 
-import "context"
+import (
+	"context"
+	"gostudy/grpc/RpcProxyMode/message"
+)
 
 type Proxy interface {
-	Invoke(ctx context.Context, req *Requset) (*Reponse, error)
-}
-type Requset struct {
-	ServiceName string
-	MethodName  string
-	Data        []byte
-	//Args        interface{}
-}
-
-type Reponse struct {
-	Data  []byte
-	Error string
-	Meta  map[string]string
+	Invoke(ctx context.Context, req *message.Request) (*message.Response, error)
 }
 
 type UserServiceClient struct {
