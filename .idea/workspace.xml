@@ -4,7 +4,12 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="56d38476-fbc0-4e61-b3e6-2295f70c7c82" name="Changes" comment="" />
+    <list default="true" id="56d38476-fbc0-4e61-b3e6-2295f70c7c82" name="Changes" comment="Changes">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grpc/RpcProxyMode/client_proxy.go" beforeDir="false" afterPath="$PROJECT_DIR$/grpc/RpcProxyMode/client_proxy.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grpc/RpcProxyMode/server2.go" beforeDir="false" afterPath="$PROJECT_DIR$/grpc/RpcProxyMode/server2.go" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -17,7 +22,7 @@
       </list>
     </option>
   </component>
-  <component name="GOROOT" url="file:///usr/local/go" />
+  <component name="GOROOT" url="file://C:/Program Files/Go" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -41,10 +46,10 @@
     "WebServerToolWindowFactoryState": "false",
     "go.import.settings.migrated": "true",
     "go.sdk.automatically.set": "true",
-    "last_opened_file_path": "/Users/edz/feng-Rise.github.io"
+    "last_opened_file_path": "D:/feng-Rise.github.io"
   }
 }]]></component>
-  <component name="RunManager" selected="Go Test.TestInitClientProxy in gostudy/grpc/RpcProxyMode">
+  <component name="RunManager" selected="Go 测试.TestClient_Inovke in gostudy/grpc/RpcProxyMode">
     <configuration name="TestClient_Inovke in gostudy/grpc/RpcProxyMode" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="feng-Rise.github.io" />
       <working_directory value="$PROJECT_DIR$/grpc/RpcProxyMode" />
@@ -105,15 +110,6 @@
       <pattern value="^\QTestServer_Start\E$" />
       <method v="2" />
     </configuration>
-    <recent_temporary>
-      <list>
-        <item itemvalue="Go Test.TestInitClientProxy in gostudy/grpc/RpcProxyMode" />
-        <item itemvalue="Go Test.TestInitClientProxy/user_service in gostudy/grpc/RpcProxyMode" />
-        <item itemvalue="Go Test.TestClient_Inovke in gostudy/grpc/RpcProxyMode" />
-        <item itemvalue="Go Test.TestServer_Start in gostudy/grpc/RpcProxyMode" />
-        <item itemvalue="Go Test.TestDemo123 in gostudy/grpc/RpcProxyMode" />
-      </list>
-    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TypeScriptGeneratedFilesManager">

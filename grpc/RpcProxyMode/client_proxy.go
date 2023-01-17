@@ -30,8 +30,30 @@ func NewClient(addr string) *Client {
 		coonPool: pool,
 	}
 }
-
 func (c *Client) Invoke(ctx context.Context, req *message.Request) (*message.Response, error) {
+	// 你可以在这里检测
+	if ctx.Err() != nil {
+		return nil, ctx.Err()
+	}
+
+	var (
+		resp *message.Response
+		err  error
+	)
+
+	ch := make(chan struct{})
+	go func() {
+		resp, err = c.doInvoke(ctx, req)
+		close(ch)
+	}()
+	select {
+	case <-ctx.Done():
+		return nil, ctx.Err()
+	case <-ch:
+		return resp, err
+	}
+}
+func (c *Client) doInvoke(ctx context.Context, req *message.Request) (*message.Response, error) {
 	coon, err := c.coonPool.Get()
 	if err != nil {
 		return nil, err

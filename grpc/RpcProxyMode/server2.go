@@ -78,6 +78,27 @@ func (s *Server) handleConn(conn net.Conn) error {
 
 		ctx := context.Background()
 		// 在这里可以检测超时
+		//var cancel func() = func() {}
+		//for key, value := range req.Meta {
+		//	if key == "timeout" {
+		//		deadline, err := strconv.ParseInt(value, 10, 64)
+		//		if err != nil {
+		//			// 返回客户端一个错误信息
+		//			resp.Error = []byte(err.Error())
+		//			resp.SetHeadLength()
+		//			_, err = conn.Write(message.EncodeResp(resp))
+		//			if err != nil {
+		//
+		//				return err
+		//			}
+		//			continue
+		//		}
+		//		ctx, cancel = context.WithDeadline(ctx, time.)
+		//	} else {
+		//		ctx = context.WithValue(ctx, key, value)
+		//	}
+		//}
+
 		data, err := service.invoke(ctx, req)
 
 		// 在这里可以检测超时
