@@ -4,11 +4,17 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
+<<<<<<< Updated upstream
     <list default="true" id="56d38476-fbc0-4e61-b3e6-2295f70c7c82" name="Changes" comment="Changes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/grpc/RpcProxyMode/client_proxy.go" beforeDir="false" afterPath="$PROJECT_DIR$/grpc/RpcProxyMode/client_proxy.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/grpc/RpcProxyMode/server2.go" beforeDir="false" afterPath="$PROJECT_DIR$/grpc/RpcProxyMode/server2.go" afterDir="false" />
+=======
+    <list default="true" id="56d38476-fbc0-4e61-b3e6-2295f70c7c82" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/grpc/RpcProxyMode/serialize/serialize.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+>>>>>>> Stashed changes
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
