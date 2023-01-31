@@ -3,10 +3,12 @@ package RpcProxyMode
 import (
 	"context"
 	"fmt"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"gostudy/grpc/RpcProxyMode/message"
 	"log"
+	"net/http"
 	"reflect"
 	"testing"
 )
@@ -87,5 +89,12 @@ func TestMakeFunc(t *testing.T) {
 	// Call the wrapped function and print the result.
 	result := wrapped.Call([]reflect.Value{reflect.ValueOf(5)})[0].Int()
 	fmt.Println(result) // Output: 6
+
+}
+
+func Test123455(t *testing.T) {
+
+	http.Handle("/metrics", promhttp.Handler())
+	http.ListenAndServe(":8080", nil)
 
 }

@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package user.proto;
+
+option go_package = "feng-Rise.github.io/grpc/grpcRegister/proto;proto_pb";
+
+service UserService {
+  rpc GetById(GetByIdReq) returns (GetByIdResp);
+}
+
+message GetByIdReq {
+  uint64 id =1;
+}
+
+message GetByIdResp {
+  User user = 1;
+}
+
+message User {
+  uint64 id = 1;
+  uint32 status = 2;
+}
