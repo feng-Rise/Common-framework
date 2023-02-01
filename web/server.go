@@ -4,7 +4,7 @@ import (
 	"net/http"
 )
 
-type HandleFunc func(ctx Context)
+type HandleFunc func(ctx *Context)
 
 type Server interface {
 	http.Handler
@@ -16,6 +16,13 @@ type Server interface {
 var _ Server = &HttpServer{}
 
 type HttpServer struct {
+	router
+}
+
+func NewHttpServer() *HttpServer {
+	return &HttpServer{
+		router: newRouter(),
+	}
 }
 
 /*这里就是做实际请求的入口
@@ -46,5 +53,11 @@ func (s *HttpServer) POST(path string, handlers HandleFunc) {
 	s.AddRoute(http.MethodPost, path, handlers)
 }
 func (s *HttpServer) Server(ctx *Context) {
-
+	n, ok := s.findRoute(ctx.Req.Method, ctx.Req.URL.Path)
+	if !ok || n.handler == nil {
+		ctx.Resp.WriteHeader(404)
+		ctx.Resp.Write([]byte("Not Found"))
+		return
+	}
+	n.handler(ctx)
 }
