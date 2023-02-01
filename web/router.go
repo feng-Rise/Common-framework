@@ -61,31 +61,66 @@ type node struct {
 	path     string
 	children map[string]*node
 	handler  HandleFunc
+	// 通配符 * 表达的节点，任意匹配
+	starChild *node
+	//路径参数匹配
+	paramChild *node
 }
 
 // findRoute 查找对应的节点
 // 注意，返回的 node 内部 HandleFunc 不为 nil 才算是注册了路由
-func (r *router) findRoute(method string, path string) (*node, bool) {
+func (r *router) findRoute(method string, path string) (*matchInfo, bool) {
 	root, ok := r.trees[method]
 	if !ok {
 		return nil, false
 	}
+
 	if path == "/" {
-		return root, true
+		return &matchInfo{n: root}, true
 	}
+
 	segs := strings.Split(strings.Trim(path, "/"), "/")
+	mi := &matchInfo{}
 	for _, s := range segs {
-		root, ok = root.childOf(s)
+		var matchParam bool
+		root, matchParam, ok = root.childOf(s)
 		if !ok {
 			return nil, false
 		}
+		if matchParam {
+			mi.addValue(root.path[1:], s)
+		}
 	}
-	return root, true
+	mi.n = root
+	return mi, true
 }
 
 // childOrCreate 查找子节点，如果子节点不存在就创建一个
 // 并且将子节点放回去了 children 中
 func (n *node) childOrCreate(path string) *node {
+	if path == "*" {
+		if n.paramChild != nil {
+			panic(fmt.Sprintf("web: 非法路由，已有路径参数路由。不允许同时注册通配符路由和参数路由 [%s]", path))
+		}
+		if n.starChild == nil {
+			n.starChild = &node{path: "*"}
+		}
+		return n.starChild
+	}
+	// 以 : 开头，我们认为是参数路由
+	if path[0] == ':' {
+		if n.starChild != nil {
+			panic(fmt.Sprintf("web: 非法路由，已有通配符路由。不允许同时注册通配符路由和参数路由 [%s]", path))
+		}
+		if n.paramChild != nil {
+			if n.paramChild.path != path {
+				panic(fmt.Sprintf("web: 路由冲突，参数路由冲突，已有 %s，新注册 %s", n.paramChild.path, path))
+			}
+		} else {
+			n.paramChild = &node{path: path}
+		}
+		return n.paramChild
+	}
 	if n.children == nil {
 		n.children = make(map[string]*node)
 	}
@@ -98,10 +133,37 @@ func (n *node) childOrCreate(path string) *node {
 	}
 	return child
 }
-func (n *node) childOf(path string) (*node, bool) {
+
+// child 返回子节点
+// 第一个返回值 *node 是命中的节点
+// 第二个返回值 bool 代表是否是命中参数路由
+// 第三个返回值 bool 代表是否命中
+func (n *node) childOf(path string) (*node, bool, bool) {
 	if n.children == nil {
-		return nil, false
+		if n.paramChild != nil {
+			return n.paramChild, true, true
+		}
+		return n.starChild, false, n.starChild != nil
 	}
 	res, ok := n.children[path]
-	return res, ok
+	if !ok {
+		if n.paramChild != nil {
+			return n.paramChild, true, true
+		}
+		return n.starChild, false, n.starChild != nil
+	}
+	return res, false, ok
+}
+
+type matchInfo struct {
+	n          *node
+	pathParams map[string]string
+}
+
+func (m *matchInfo) addValue(key string, value string) {
+	if m.pathParams == nil {
+		// 大多数情况，参数路径只会有一段
+		m.pathParams = map[string]string{key: value}
+	}
+	m.pathParams[key] = value
 }
