@@ -5,7 +5,7 @@ import (
 	"net/url"
 )
 
-//为什么http请求是指针，返回是个接口
+// 为什么http请求是指针，返回是个接口
 type Context struct {
 	Req *http.Request
 	// Resp 原生的 ResponseWriter。当你直接使用 Resp 的时候，
@@ -29,4 +29,7 @@ type Context struct {
 
 	// 缓存的数据
 	cacheQueryValues url.Values
+
+	//
+	UserValues map[string]any
 }

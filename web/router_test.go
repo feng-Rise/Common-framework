@@ -2,14 +2,33 @@ package web
 
 import (
 	"fmt"
-	"github.com/mattn/go-gtk/gtk"
-	"math/rand"
+	"github.com/gin-gonic/gin"
+	"net/http"
+	"os"
+	"strconv"
 	"testing"
-	"time"
 )
 
 func TestRouter_addRouter(T *testing.T) {
 
+	r := gin.Default()
+
+	r.GET("/", func(ctx *gin.Context) {
+		contentType := "text/plain"
+		path, _ := os.Getwd()
+		path = path + "/test.txt"
+		buf, err := os.ReadFile(path)
+		if err != nil {
+			return
+		}
+
+		ctx.Writer.Header().Set("Cache-Control", "private, max-age=31536000")
+
+		ctx.Writer.Header().Set("Content-Length", strconv.Itoa(len(buf)))
+
+		ctx.Data(http.StatusOK, contentType, buf)
+	})
+	r.Run(":8080")
 }
 
 type testHandle func(ctx Context)
@@ -58,45 +77,4 @@ func Testlog(t *testing.T) {
 
 func TestPanic(t *testing.T) {
 
-}
-func TestGame(t *testing.T) {
-
-	const (
-		width      = 10
-		height     = 20
-		blockSize  = 30
-		blockColor = "#00FF00"
-	)
-
-	gtk.Init(nil)
-	window := gtk.NewWindow(gtk.WINDOW_TOPLEVEL)
-	window.SetTitle("俄罗斯方块")
-	window.Connect("destroy", gtk.MainQuit)
-
-	board := gtk.NewDrawingArea()
-	board.SetSizeRequest(width*blockSize, height*blockSize)
-	window.Add(board)
-
-	rand.Seed(time.Now().UnixNano())
-
-	// insert a block at a random location
-	//x := width / 2
-	y := 0
-	board.Connect("expose-event", func() {
-		win := board.GetWindow().Show
-		win()
-		//board.GetWindow().SetBackground(gtk.NewGdkColor(blockColor))
-		//board.GetWindow().Rectangle(board.GetStyle().BlackGC(), true, blockSize*x, blockSize*y, blockSize, blockSize)
-	})
-
-	ticker := time.NewTicker(time.Second)
-	go func() {
-		for range ticker.C {
-			y++
-			board.QueueDraw()
-		}
-	}()
-
-	window.ShowAll()
-	gtk.Main()
 }
